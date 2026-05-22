@@ -31,6 +31,7 @@ class Book(db.Model):
     title = db.Column(db.String(150), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     isbn = db.Column(db.String(20), unique=True, nullable=False)
+    description = db.Column(db.String(200), nullable=True)
 
 # Route: Tampilkan Semua Buku
 @app.route("/")
@@ -44,9 +45,10 @@ def add_book():
     title = request.form.get("title")
     author = request.form.get("author")
     isbn = request.form.get("isbn")
+    description = request.form.get("description")
 
     if not title or not author or not isbn:
-        flash("Semua kolom input wajib diisi!", "danger")
+        flash("Kolom Title, Author, dan ISBN wajib diisi!", "danger")
         return redirect(url_for("index"))
 
     # Cek duplikat ISBN
@@ -56,7 +58,7 @@ def add_book():
         return redirect(url_for("index"))
 
     try:
-        new_book = Book(title=title, author=author, isbn=isbn)
+        new_book = Book(title=title, author=author, isbn=isbn, description=description)
         db.session.add(new_book)
         db.session.commit()
         flash("Buku berhasil ditambahkan ke perpustakaan!", "success")
